@@ -12,6 +12,8 @@ const Main = () => {
     resultData,
     setInput,
     input,
+    handleMicClick,
+    listening,
   } = useContext(Context);
 
   return (
@@ -102,7 +104,13 @@ const Main = () => {
             />
             <div>
               <img src={assets.gallery_icon} alt="" />
-              <img src={assets.mic_icon} alt="" />
+              <img
+                onClick={handleMicClick}
+                src={assets.mic_icon}
+                alt=""
+                style={{ cursor: "pointer" }}
+                className={`mic-icon ${listening ? 'active' : ''}`}
+              />
               {input ? (
                 <img onClick={() => onSent()} src={assets.send_icon} alt="" />
               ) : null}
