@@ -4,6 +4,8 @@ Gemini Clone is a project aimed at replicating the functionality of Gemini, powe
 
 ![Image description](.//gemini/GeminiPage.jpg)
 
+## Working Link
+(https://gemini-eta-virid.vercel.app/)
 
 ## Table of Contents
 
