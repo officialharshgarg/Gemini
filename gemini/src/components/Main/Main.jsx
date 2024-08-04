@@ -1,7 +1,7 @@
-import "./Main.css";
-import { useContext } from "react";
-import { assets } from "../../assets/assets";
-import { Context } from "../../context/Context";
+import React, { useContext } from 'react';
+import { Context } from '../../context/Context';
+import { assets } from '../../assets/assets';
+import './Main.css';
 
 const Main = () => {
   const {
@@ -14,32 +14,30 @@ const Main = () => {
     input,
     handleMicClick,
     listening,
+    interimInput, // Get interimInput from context
   } = useContext(Context);
 
   return (
     <div className="main">
       <div className="nav">
         <p>Gemini</p>
-        <img src={assets.user_icon} />
+        <img src={assets.user_icon} alt="User Icon" />
       </div>
 
       <div className="main-container">
         {!showResult ? (
-          <>
-            {" "}
-            <div className="greet">
-              <p>
-                <span>Hello, User</span>
-              </p>
-              <p>How can I help you today?</p>
-            </div>
+          <div className="greet">
+            <p className='greet-text'>
+              <span>Hello, HUMAN</span>
+            </p>
+            <p className='greet-text'>How can I help you today?</p>
             <div className="cards">
               <div
                 onClick={() => onSent("Suggest some places for the trip")}
                 className="card"
               >
                 <p>Suggest some places for the trip</p>
-                <img src={assets.compass_icon} alt="" />
+                <img src={assets.compass_icon} alt="Compass Icon" />
               </div>
 
               <div
@@ -47,7 +45,7 @@ const Main = () => {
                 className="card"
               >
                 <p>Briefly summarize: Urban Planning</p>
-                <img src={assets.bulb_icon} alt="" />
+                <img src={assets.bulb_icon} alt="Bulb Icon" />
               </div>
 
               <div
@@ -59,7 +57,7 @@ const Main = () => {
                 className="card"
               >
                 <p>Brainstorm team bonding activities for our work retreat</p>
-                <img src={assets.message_icon} alt="" />
+                <img src={assets.message_icon} alt="Message Icon" />
               </div>
 
               <div
@@ -69,18 +67,18 @@ const Main = () => {
                 className="card"
               >
                 <p>Tell me about React js and React native</p>
-                <img src={assets.code_icon} alt="" />
+                <img src={assets.code_icon} alt="Code Icon" />
               </div>
             </div>
-          </>
+          </div>
         ) : (
           <div className="result">
             <div className="result-title">
-              <img src={assets.user_icon} alt="" />
+              <img src={assets.user_icon} alt="User Icon" />
               <pre>{recentPrompt}</pre>
             </div>
             <div className="result-data">
-              <img src={assets.gemini_icon} alt="" />
+              <img src={assets.gemini_icon} alt="Gemini Icon" />
               {loading ? (
                 <div className="loader">
                   <hr />
@@ -98,22 +96,26 @@ const Main = () => {
           <div className="search-box">
             <input
               onChange={(e) => setInput(e.target.value)}
-              value={input}
+              value={listening ? input + interimInput : input} // Display interim input while listening
               type="text"
               placeholder="Enter a prompt here"
             />
             <div>
-              <img src={assets.gallery_icon} alt="" />
+              <img src={assets.gallery_icon} alt="Gallery Icon" />
               <img
                 onClick={handleMicClick}
                 src={assets.mic_icon}
-                alt=""
+                alt={listening ? "Stop Listening" : "Start Listening"}
                 style={{ cursor: "pointer" }}
                 className={`mic-icon ${listening ? 'active' : ''}`}
               />
-              {input ? (
-                <img onClick={() => onSent()} src={assets.send_icon} alt="" />
-              ) : null}
+              {input && (
+                <img
+                  onClick={() => onSent(input)}
+                  src={assets.send_icon}
+                  alt="Send Icon"
+                />
+              )}
             </div>
           </div>
 

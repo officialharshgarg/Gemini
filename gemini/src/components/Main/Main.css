@@ -25,13 +25,17 @@
 }
 
 .main .greet {
-  margin: 50px 0px;
+  margin: 20px 0px;
   font-size: 56px;
   color: #c4c7c5;
   font-weight: 500;
   padding: 20px;
 }
 
+.main .greet .greet-text{
+  margin-left: 18px;
+
+}
 .main .greet span {
   background: -webkit-linear-gradient(16deg, #4b90ff, #ff5546);
   -webkit-background-clip: text;
@@ -120,9 +124,9 @@
 }
 
 .mic-icon.active {
-  border: 4px solid green; /* Adjust the thickness of the border */
-  border-radius: 50%; /* Make the border circular */
-  box-shadow: 0 0 0 4px rgba(0, 255, 0, 0.3); /* Optional: adds a glowing effect */
+  border: 4px solid green;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(0, 255, 0, 0.3);
 }
 
 .main .bottom-info {

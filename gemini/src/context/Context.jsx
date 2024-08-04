@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect, useRef } from "react";
+import React, { createContext, useState, useEffect } from "react";
+import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 import run from "../config/gemini";
 
 export const Context = createContext();
@@ -11,73 +12,49 @@ const ContextProvider = (props) => {
   const [loading, setLoading] = useState(false);
   const [resultData, setResultData] = useState("");
   const [listening, setListening] = useState(false);
-  const recognitionRef = useRef(null);
-  const interimTranscriptRef = useRef("");
+  const [interimInput, setInterimInput] = useState("");
+
+  const {
+    transcript,
+    interimTranscript,
+    resetTranscript,
+    listening: recognitionListening,
+  } = useSpeechRecognition();
 
   useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert("Sorry, your browser doesn't support speech recognition.");
-      return;
+    setInterimInput(interimTranscript);
+  }, [interimTranscript]);
+
+  useEffect(() => {
+    if (!recognitionListening) {
+      setInput((prevInput) => prevInput + transcript);
+      setInterimInput("");
+      resetTranscript();
     }
+    setListening(recognitionListening);
+  }, [recognitionListening, transcript, resetTranscript]);
 
-    const recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = "en-US";
-    recognitionRef.current = recognition;
-
-    recognition.onstart = () => {
+  const logRecognition = (isListening) => {
+    if (isListening) {
       console.log("Speech recognition started");
-    };
-
-    recognition.onend = () => {
-      console.log("Speech recognition ended");
-      if (listening) {
-        recognition.start();
-      }
-    };
-
-    recognition.onresult = (event) => {
-      let interimTranscript = "";
-      let finalTranscript = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcriptPart = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          finalTranscript += transcriptPart;
-          interimTranscriptRef.current = "";
-        } else {
-          interimTranscriptRef.current += transcriptPart;
-        }
-      }
-      console.log("Interim Transcript:", interimTranscriptRef.current);
-      console.log("Final Transcript:", finalTranscript);
-
-      if (finalTranscript) {
-        // Update input state with final results only
-        setInput((prevInput) => prevInput + finalTranscript);
-      }
-    };
-
-    return () => {
-      recognition.stop();
-    };
-  }, [listening]);
+    } else {
+      console.log("Speech recognition stopped");
+    }
+  };
 
   const handleMicClick = () => {
-    setListening((prevListening) => {
-      if (prevListening) {
-        recognitionRef.current.stop();
-      } else {
-        recognitionRef.current.start();
-      }
-      return !prevListening;
-    });
+    if (listening) {
+      SpeechRecognition.stopListening();
+      logRecognition(false);
+    } else {
+      resetTranscript();
+      SpeechRecognition.startListening({ continuous: true });
+      logRecognition(true);
+    }
   };
 
   const delayPara = (index, nextWord) => {
-    setTimeout(function () {
+    setTimeout(() => {
       setResultData((prev) => prev + nextWord);
     }, 75 * index);
   };
@@ -85,7 +62,10 @@ const ContextProvider = (props) => {
   const newChat = () => {
     setLoading(false);
     setShowResult(false);
+    setInput(""); // Clear the input field for a new chat
+    setRecentPrompt(""); // Clear the recent prompt for a new chat
   };
+
   const onSent = async (prompt) => {
     setResultData("");
     setLoading(true);
@@ -93,8 +73,9 @@ const ContextProvider = (props) => {
 
     let response;
     if (prompt !== undefined) {
-      response = await run(prompt);
+      setPrevPrompt((prev) => [...prev, prompt]);
       setRecentPrompt(prompt);
+      response = await run(prompt);
     } else {
       setPrevPrompt((prev) => [...prev, input]);
       setRecentPrompt(input);
@@ -105,7 +86,7 @@ const ContextProvider = (props) => {
     let newResponse = "";
 
     for (let i = 0; i < responseArray.length; i++) {
-      if (i == 0 || i % 2 !== 1) {
+      if (i === 0 || i % 2 !== 1) {
         newResponse += responseArray[i];
       } else {
         newResponse += "<b>" + responseArray[i] + "</b>";
@@ -138,9 +119,13 @@ const ContextProvider = (props) => {
     newChat,
     handleMicClick,
     listening,
+    interimInput,
   };
+
   return (
-    <Context.Provider value={contextValue}>{props.children}</Context.Provider>
+    <Context.Provider value={contextValue}>
+      {props.children}
+    </Context.Provider>
   );
 };
 

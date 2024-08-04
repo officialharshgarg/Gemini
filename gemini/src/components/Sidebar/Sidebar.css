@@ -5,6 +5,7 @@
   justify-content: space-between;
   background-color: #f0f4f9;
   padding: 25px 15px;
+  align-items: start;
 }
 
 .sidebar img {
@@ -33,6 +34,7 @@
 .sidebar .recent {
   display: flex;
   flex-direction: column;
+  margin-left: 10px;
   animation: fadeIn 1.5s;
 }
 
@@ -66,8 +68,8 @@
   cursor: pointer;
 }
 
-@media (max-width:600px){
-    .sidebar{
-        display: none;
-    }
+@media (max-width: 600px) {
+  .sidebar {
+    display: none;
+  }
 }
