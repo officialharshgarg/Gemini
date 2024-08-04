@@ -2,6 +2,8 @@
 
 Gemini Clone is a project aimed at replicating the functionality of Gemini, powered by the Google Gemini API, using React and CSS.
 
+<img src="Gemini\Gemini\gemini\public\Gemini Page.jpg" align="center" style="width: 50%" />
+
 ## Table of Contents
 
 - [Introduction](#introduction)
