@@ -23,9 +23,10 @@ This project introduces a React-based web application that functions as a clone 
 
 ### Core Features
 
-- **Chat Interface:** Provides a dedicated interface for interacting with the Gemini model in a conversational style.
-- **Simulated Typing Effect:** Enhances the user experience by mimicking a natural typing effect during responses.
 - **Google Gemini Integration:** Utilizes the capabilities of the Google Gemini model for generating informative responses.
+- **Speech Recognition Integration:** Allows users to interact through voice commands, offering a hands-free experience.
+- **Simulated Typing Effect:** Enhances the user experience by mimicking a natural typing effect during responses.
+- **Chat Interface:** Provides a dedicated interface for interacting with the Gemini model in a conversational style.
 
 ### Additional Features
 
